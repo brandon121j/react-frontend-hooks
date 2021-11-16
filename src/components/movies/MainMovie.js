@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import MovieDetail from './MovieDetail';
 import Loading from './Loading';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 require('dotenv').config();
 
 export function MainMovie() {
@@ -22,6 +24,26 @@ export function MainMovie() {
 	];
 	const random = Math.floor(Math.random() * startingSearch.length);
 	const api = process.env.REACT_APP_API_KEY;
+
+	success = () => toast.success('Movie added to favorites list', {
+		position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+	});
+
+	error = (input) => toast.error(`${input}`, {
+		position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+	});
 
 	useEffect(async () => {
 		fetchMovies();
@@ -61,6 +83,26 @@ export function MainMovie() {
 	const onInputHandler = (e) => {
 		setSearch(e.target.value);
 	};
+
+	addToFavorites = async(e) => {
+		if (localStorage.getItem('jwtToken') == null) {
+
+		} else {
+			let decodedToken = jwt.verify(localStorage.getItem('jwtToken'), process.env.REACT_APP_JWT_SECRET)
+		
+		try {
+			let payload = await axios.post(`http://localhost:3001/movies/add-favorite`, {
+				title: e.data.Title,
+				moviePoster: e.data.Poster,
+				imdbLink: `https://www.omdbapi.com/?apikey=${this.state.apiKey}&i=${e.imdbID}`,
+				userID: decodedToken.id
+			});
+			this.success();
+		} catch(e) {
+			console.log(e.response)
+		}
+	}
+	}
 
 	const onClickHandler = async () => {
 		try {
