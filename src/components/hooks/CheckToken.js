@@ -1,31 +1,33 @@
-import { useEffect } from 'react';
-import jwtDecode from 'jwt-decode';
+import jwt from 'jsonwebtoken';
+require('dotenv').config()
 
 
 function CheckToken() {
-    const [isAuth, setIsAuth] = useState(false);
+    const key = process.env.REACT_APP_JWT_SECRET
 
     function checkJwtToken() {
-        let jwtToken = window.localStorage.getItem('jwtToken');
+        let jwtToken = localStorage.getItem('loginToken');
 
         if (jwtToken) {
-            let decodedToken = jwtDecode(jwtToken);
-
-            const currentTime = Date.now() / 100;
-
-            if (decodedToken.exp < currentTime) {
-                window.localStorage.removeItem('jwtToken');
-
-                return false;
-            } else {
-                return true;
+            try {
+                let decodedToken = jwt.verify(jwtToken, key)
+                if (decodedToken.exp < Date.now() / 1000) {
+                    localStorage.removeItem('loginToken')
+                    return false
+                } else {
+                    return true
+                }
+            } catch(e) {
+                localStorage.removeItem('loginToken');
+                return false
             }
         } else {
-            return false;
+            return false
         }
     }
-
-    return [checkJwtToken];
+    return { checkJwtToken }
 }
+
+export default CheckToken
 
 
