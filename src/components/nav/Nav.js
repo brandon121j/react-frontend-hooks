@@ -22,4 +22,4 @@ function Nav({ user }) {
     )
 }
 
-export default Nav;
+export default Nav

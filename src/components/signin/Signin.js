@@ -1,94 +1,102 @@
-import React from 'react';
-import { toast } from 'react-toastify';
+import React from "react";
 
-import axios from 'axios';
+import PasswordHooks from "../hooks/PasswordHooks";
+import EmailHooks from "../hooks/EmailHooks";
 
-import EmailHooks from '../hooks/EmailHooks';
-import PasswordHooks from '../hooks/PasswordHooks';
+import { toast } from "react-toastify";
+import axios from "axios";
 
 
-function Signin() {
-	const success = () =>
+// export const SignIn = () => {
+function SignIn(){
+    const notifySuccess = () => toast.success('User successfully signed in!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
 
-		toast.success('Login Success', {
-			position: 'top-center',
-			autoClose: 3000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-		});
+    const notifyFailed = (input) => toast.error(`${input}`, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+    
+    const [email, handleEmailOnChange, emailError, setEmailOnFocus, setEmailOnBlur] = EmailHooks()
+    const [password, handlePassowrdOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = PasswordHooks()
 
-	const [
-		email,
-		handleEmailOnChange,
-		setEmailOnFocus,
-		setEmailOnBlur,
-	] = EmailHooks();
-	const [
-		password,
-		handlePasswordOnChange,
-		setPasswordOnFocus,
-		setPasswordOnBlur,
-	] = PasswordHooks();
-
-	async function onSubmitHandler(e) {
-		e.preventDefault();
-		try {
-			let payload = await axios.post('http://localhost:3001/users/login', {
-				email,
-				password,
-			});
-
-			success();
-		} catch (e) {
-			toast.error(e.response.data.error, {
-				position: 'top-center',
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	}
+    async function handleOnSubmit(e) {
+        e.preventDefault()
+        try {
+            let payload = await axios.post("http://localhost:3001/users/login",{
+                email,
+                password
+            });
+            notifySuccess()
+        }catch(e){
+            let arr = []
+            console.log(e.response)
+            for(let key in e.response.data.error) {
+                arr.push(e.response.data.error[key])
+            }
+            console.log(arr)
+            if(arr[0].length === 1) {
+                notifyFailed(e.response.data.error)
+            }else{
+                arr.map( error => notifyFailed(error))
+            }
+        }
+    }
 
     return (
-        <div>
-            <div>
-                <h1>Sign in</h1>
-                <form onChange={onSubmitHandler}>
-                <div>
-                    <label>Email</label>
-                    <input 
-                        name={email}
+        <div className="form-div-signin">
+            <main className="form-signin">
+                <form onSubmit={handleOnSubmit}>
+                    <h1 className="h3 mb-3 fw-normal">Please sign In</h1>
+                    <div className="form-floating">
+                        <input
+                        style={{border : `1px solid ${email.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${email.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
+                        name={email} 
                         onChange={handleEmailOnChange}
                         onFocus={()=> setEmailOnFocus(true)} 
                         onBlur={()=> setEmailOnBlur(true)}
-                        type='email'
-                    />
-                </div>
-                <div>
-                    <label>Password</label>
-                    <input
-                        name={password}
-                        onChange={handlePasswordOnChange}
+                        type="email"
+                        className="form-control"
+                        id="floatingInput"
+                        placeholder="name@example.com"
+                        />
+                        <label htmlFor="floatingInput">{email.length === 0 ? <span style={{color : 'red'}}>Please enter your email</span> : ("Email")}</label>
+                    </div>
+
+                    <div className="form-floating">
+                        <input
+                        style={{border : `1px solid ${password.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${password.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
+                        type="password"
+                        name={password} 
+                        onChange={handlePassowrdOnChange}
                         onFocus={()=> setPasswordOnFocus(true)} 
                         onBlur={()=> setPasswordOnBlur(true)}
-                        type='password'
-                    />
-                </div>
-                <div>
-                    <button type='submit'>
-                        Sign in
+                        className="form-control"
+                        id="floatingPassword"
+                        placeholder="Password"
+                        />
+                        <label htmlFor="floatingInput">{password.length === 0 ? <span style={{color : 'red'}}>Please enter your password</span>  : ("Password")}</label>
+                    </div>
+            
+                    <button className="w-100 btn btn-lg btn-primary" type="submit">
+                        Sign In
                     </button>
-                </div>
                 </form>
-            </div>
+            </main>
         </div>
-    )
+    );
 }
 
-export default Signin;
+export default SignIn
