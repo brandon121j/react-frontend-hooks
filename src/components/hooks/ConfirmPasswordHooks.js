@@ -17,16 +17,16 @@ function ConfirmPasswordHooks(){
 
         if(onBlur){
             if(password.length === 0){
-                setError("password cannot be empty")
+                setError("Passwords must match")
             }
         }
     }, [password, onBlur, onFocus])
 
-    function handlePasswordOnChange(e){
+    function handleConfirmPasswordOnChange(e){
         setPassword(e.target.value)
     }
 
-    return [password, handlePasswordOnChange, error, setOnFocus, setOnBlur]
+    return [password, handleConfirmPasswordOnChange, error, setOnFocus, setOnBlur]
 }
 
 export default ConfirmPasswordHooks

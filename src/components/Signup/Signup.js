@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import {useNavigate} from'react-router-dom'
 
 import { toast } from "react-toastify";
@@ -19,7 +19,7 @@ const { checkJwtToken } = CheckToken()
 function SignUp(){
 
     const notifySuccess = () => toast.success('User successfully created!', {
-        position: "top-right",
+        position: "top-center",
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -29,7 +29,7 @@ function SignUp(){
         });
     
     const notifyFailed = (input) => toast.error(`${input}`, {
-        position: "top-right",
+        position: "top-center",
         autoClose: 4000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -169,7 +169,7 @@ function SignUp(){
                         id="floatingPassword"
                         placeholder="Confirm Password"
                         />
-                        <label htmlFor="floatingInput">{passwordError.length > 0 ? <span style={{color : 'red'}}>{passwordError}</span>  : ("Password")}</label>
+                        <label htmlFor="floatingInput">{confirmPasswordError.length > 0 ? <span style={{color : 'red'}}>{confirmPasswordError}</span>  : ("Confirm Password")}</label>
                     </div>
             
                     <button className="w-100 btn btn-lg btn-primary" type="submit">

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// import MovieDetail from './MovieDetail';
+import { jwt } from 'jsonwebtoken';
 import Loading from './Loading';
 require('dotenv').config();
 
@@ -94,6 +94,8 @@ export function MainMovie() {
 		}
 	};
 
+    
+
 	const keyPressHandler = (e) => {
 		if (e.keyCode === 13) {
 			onClickHandler();
@@ -138,5 +140,3 @@ export function MainMovie() {
 		</div>
 	);
 }
-
-// export default MainMovie;

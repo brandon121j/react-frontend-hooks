@@ -10,9 +10,9 @@ import CheckToken from "../hooks/CheckToken";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const { checkJwtToken } = CheckToken()
+const { checkJwtToken } = CheckToken();
 
-require('dotenv').config()
+require('dotenv').config();
 
 function SignIn({setUser}) {
     let navigate = useNavigate();
@@ -38,7 +38,7 @@ function SignIn({setUser}) {
     });
 
     useEffect(() => {
-        if(checkJwtToken()) {
+        if (checkJwtToken()) {
             navigate('/')
         }
     }, [])
@@ -69,17 +69,7 @@ function SignIn({setUser}) {
 
             
         }catch(e){
-            let arr = []
-            console.log(e.response)
-            for(let key in e.response.data.error) {
-                arr.push(e.response.data.error[key])
-            }
-            console.log(arr)
-            if(arr[0].length === 1) {
-                notifyFailed(e.response.data.error)
-            }else{
-                arr.map( error => notifyFailed(error))
-            }
+            console.log(e)
         }
     }
 
