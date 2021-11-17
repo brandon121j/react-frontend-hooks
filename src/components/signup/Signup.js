@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,8 +7,6 @@ import LastNameHooks from '../hooks/LastNameHooks';
 import UsernameHooks from '../hooks/UsernameHooks';
 import PasswordHooks from '../hooks/PasswordHooks';
 import EmailHooks from '../hooks/EmailHooks';
-import jwtDecode from 'jwt-decode';
-import { useNavigate } from 'react-router-dom'
 
 function Signup() {
 	const [
@@ -50,24 +48,6 @@ function Signup() {
 		setUsernameOnFocus,
 		setUsernameOnBlur,
 	] = UsernameHooks();
-
-	const navigate = useNavigate();
-
-    useEffect(() => {
-		let jwtToken = window.localStorage.getItem('jwtToken');
-
-		if (jwtToken) {
-			let decodedToken = jwtDecode(jwtToken);
-
-			const currentTime = Date.now() / 1000;
-
-			if (decodedToken.exp < currentTime) {
-                window.localStorage.removeItem('jwtToken');
-			} else {
-                navigate('/')
-			}
-		}
-	}, [])
 
 	const onSubmitHandler = async (e) => {
 		e.preventDefault();

@@ -1,15 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { toast } from 'react-toastify';
-import jwt from 'jsonwebtoken';
-import jwtDecode from 'jwt-decode';
-import CheckToken from '../hooks/CheckToken';
+
 import axios from 'axios';
 
 import EmailHooks from '../hooks/EmailHooks';
 import PasswordHooks from '../hooks/PasswordHooks';
 
-require('dotenv').config();
 
 function Signin() {
 	const success = () =>
@@ -27,14 +23,12 @@ function Signin() {
 	const [
 		email,
 		handleEmailOnChange,
-		emailError,
 		setEmailOnFocus,
 		setEmailOnBlur,
 	] = EmailHooks();
 	const [
 		password,
 		handlePasswordOnChange,
-		passwordError,
 		setPasswordOnFocus,
 		setPasswordOnBlur,
 	] = PasswordHooks();
@@ -86,8 +80,15 @@ function Signin() {
                         type='password'
                     />
                 </div>
+                <div>
+                    <button type='submit'>
+                        Sign in
+                    </button>
+                </div>
                 </form>
             </div>
         </div>
     )
 }
+
+export default Signin;
