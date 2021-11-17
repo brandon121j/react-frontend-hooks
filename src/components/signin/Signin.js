@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
+import {useNavigate} from'react-router-dom'
+import jwt from 'jsonwebtoken'
 
-import PasswordHooks from "../hooks/PasswordHooks";
-import EmailHooks from "../hooks/EmailHooks";
+import LoginEmailHooks from '../hooks/loginHooks/LoginEmailHooks';
+import LoginPasswordHooks from '../hooks/loginHooks/LoginPasswordHooks';
+
+import CheckToken from "../hooks/CheckToken";
 
 import { toast } from "react-toastify";
 import axios from "axios";
 
+const { checkJwtToken } = CheckToken()
 
-// export const SignIn = () => {
-function SignIn(){
+require('dotenv').config()
+
+function SignIn({setUser}) {
+    let navigate = useNavigate();
+
     const notifySuccess = () => toast.success('User successfully signed in!', {
-        position: "top-right",
+        position: "top-center",
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -20,7 +28,7 @@ function SignIn(){
     });
 
     const notifyFailed = (input) => toast.error(`${input}`, {
-        position: "top-right",
+        position: "top-center",
         autoClose: 4000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -28,9 +36,15 @@ function SignIn(){
         draggable: true,
         progress: undefined,
     });
+
+    useEffect(() => {
+        if(checkJwtToken()) {
+            navigate('/')
+        }
+    }, [])
     
-    const [email, handleEmailOnChange, emailError, setEmailOnFocus, setEmailOnBlur] = EmailHooks()
-    const [password, handlePassowrdOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = PasswordHooks()
+    const [email, emailOnChangeHandler, emailError, setEmailOnFocus, setEmailOnBlur] = LoginEmailHooks()
+    const [password, passwordOnChangeHandler, passwordError, setPasswordOnFocus, setPasswordOnBlur] = LoginPasswordHooks()
 
     async function handleOnSubmit(e) {
         e.preventDefault()
@@ -39,7 +53,21 @@ function SignIn(){
                 email,
                 password
             });
-            notifySuccess()
+
+            let decodedToken = jwt.verify(payload.data.token, process.env.REACT_APP_JWT_SECRET);
+
+            setUser({
+                email: decodedToken.email,
+                username: decodedToken.username,
+                userID: decodedToken.id
+            });
+
+            localStorage.setItem('loginToken', payload.data.token)
+
+            notifySuccess();
+            navigate('/');
+
+            
         }catch(e){
             let arr = []
             console.log(e.response)
@@ -62,25 +90,25 @@ function SignIn(){
                     <h1 className="h3 mb-3 fw-normal">Please sign In</h1>
                     <div className="form-floating">
                         <input
-                        style={{border : `1px solid ${email.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${email.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
+                        style={{border : `1px solid ${emailError.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${emailError.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
                         name={email} 
-                        onChange={handleEmailOnChange}
+                        onChange={emailOnChangeHandler}
                         onFocus={()=> setEmailOnFocus(true)} 
                         onBlur={()=> setEmailOnBlur(true)}
                         type="email"
                         className="form-control"
                         id="floatingInput"
-                        placeholder="name@example.com"
+                        placeholder="email@example.com"
                         />
                         <label htmlFor="floatingInput">{email.length === 0 ? <span style={{color : 'red'}}>Please enter your email</span> : ("Email")}</label>
                     </div>
 
                     <div className="form-floating">
                         <input
-                        style={{border : `1px solid ${password.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${password.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
+                        style={{border : `1px solid ${passwordError.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${passwordError.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
                         type="password"
                         name={password} 
-                        onChange={handlePassowrdOnChange}
+                        onChange={passwordOnChangeHandler}
                         onFocus={()=> setPasswordOnFocus(true)} 
                         onBlur={()=> setPasswordOnBlur(true)}
                         className="form-control"

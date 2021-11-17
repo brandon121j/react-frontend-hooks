@@ -1,5 +1,6 @@
 import axios from "axios";
-import React from "react";
+import { useState, useEffect } from "react";
+import {useNavigate} from'react-router-dom'
 
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,8 +9,11 @@ import EmailHooks from "../hooks/EmailHooks";
 import FirstNameHooks from "../hooks/FirstNameHooks";
 import LastNameHooks from "../hooks/LastNameHooks";
 import PasswordHooks from "../hooks/PasswordHooks";
+import ConfirmPasswordHooks from "../hooks/ConfirmPasswordHooks";
 import UsernameHooks from "../hooks/UsernameHooks";
+import CheckToken from "../hooks/CheckToken";
 
+const { checkJwtToken } = CheckToken()
 
 // export const SignUp = () => {
 function SignUp(){
@@ -34,9 +38,18 @@ function SignUp(){
         progress: undefined,
         });
 
+        let navigate = useNavigate()
+
+        useEffect(() => {
+            if (checkJwtToken()) {
+                navigate('/')
+            }
+        }, [])
+
     const [firstName, handleFirstNameOnChange, firstNameError, setFirstNameOnFocus, setFirstNameOnBlur] = FirstNameHooks()
     const [lastName, handleLastNameOnChange, lastNameError, setOnFocus, setOnBlur] = LastNameHooks()
-    const [password, handlePassowrdOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = PasswordHooks()
+    const [password, handlePasswordOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = PasswordHooks()
+    const [confirmPassword, handleConfirmPasswordOnChange, confirmPasswordError, setConfirmPasswordOnFocus, setConfirmPasswordOnBlur] = ConfirmPasswordHooks()
     const [username, handleUsernameOnChange, usernameError, setUsernameOnFocus, setUsernameOnBlur] = UsernameHooks()
     const [email, handleEmailOnChange, emailError, setEmailOnFocus, setEmailOnBlur] = EmailHooks()
 
@@ -44,28 +57,21 @@ function SignUp(){
         e.preventDefault()
         
         try {
-            let payload = await axios.post("http://localhost:3001/api/users/create-user",
+            let payload = await axios.post("http://localhost:3001/users/create-user",
             {
                 firstName,
                 lastName,
                 username,
                 email,
-                password
-            })
-            console.log(payload)
-            notifySuccess()
+                password,
+                confirmPassword
+            });
+            console.log(payload);
+            notifySuccess();
+            navigate('/sign-in');
         }catch(e){
             let arr = []
             console.log(e.response)
-            for(let key in e.response.data.error){
-                arr.push(e.response.data.error[key])
-            }
-            console.log(arr)
-            if(arr[0].length === 1){
-                notifyFailed(e.response.data.error)
-            }else{
-                arr.map( error => notifyFailed(error))
-            }
         }
     }
 
@@ -140,12 +146,28 @@ function SignUp(){
                         style={{border : `1px solid ${passwordError.length > 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${passwordError.length > 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
                         type="password"
                         name={password} 
-                        onChange={handlePassowrdOnChange}
+                        onChange={handlePasswordOnChange}
                         onFocus={()=> setPasswordOnFocus(true)} 
                         onBlur={()=> setPasswordOnBlur(true)}
                         className="form-control"
                         id="floatingPassword"
                         placeholder="Password"
+                        />
+                        <label htmlFor="floatingInput">{passwordError.length > 0 ? <span style={{color : 'red'}}>{passwordError}</span>  : ("Password")}</label>
+                    </div>
+
+                    
+                    <div className="form-floating">
+                        <input
+                        style={{border : `1px solid ${confirmPasswordError.length > 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${confirmPasswordError.length > 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
+                        type="password"
+                        name={confirmPassword} 
+                        onChange={handleConfirmPasswordOnChange}
+                        onFocus={()=> setConfirmPasswordOnFocus(true)} 
+                        onBlur={()=> setConfirmPasswordOnBlur(true)}
+                        className="form-control"
+                        id="floatingPassword"
+                        placeholder="Confirm Password"
                         />
                         <label htmlFor="floatingInput">{passwordError.length > 0 ? <span style={{color : 'red'}}>{passwordError}</span>  : ("Password")}</label>
                     </div>
