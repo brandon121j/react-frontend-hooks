@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { jwt } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from './Loading';
@@ -52,11 +52,7 @@ export function MainMovie() {
     });
 
 	useEffect(async () => {
-        if (checkJwtToken()) {
-            navigate('/sign-in')
-        } else {
             fetchMovies();
-        }
 	}, []);
 
 	async function fetchMovies() {
@@ -97,7 +93,24 @@ export function MainMovie() {
     const addToFavorites = async(e) => {
         if (localStorage.getItem('loginToken') === null) {
             notifyFailed('Please login')
-            navigate('/sign-in')
+        } else {
+            let decodedToken = jwt.verify(localStorage.getItem('loginToken'), process.env.REACT_APP_JWT_SECRET);
+            console.log(e.data)
+
+            try {
+                let payload = await axios.post("http://localhost:3001/movies/add-favorite", {
+                    title: e.data.Title,
+                    moviePoster: e.data.Poster,
+                    imdbLink: `https://www.omdbapi.com/?apikey=${api}&i=${e.data.imdbID}`,
+                    userID: decodedToken.userID
+                },
+                {headers : {"Authorization" : `Bearer ${localStorage.getItem('loginToken')}`}})
+                console.log(payload)
+                notifySuccess('Movie added to favorites')
+            } catch(e) {
+                console.log(e)
+                notifyFailed(e.response.Error)
+            }
         }
     }
 
@@ -160,7 +173,7 @@ export function MainMovie() {
 						return (
 							<div className="HomePageContainer" key={item.data.imdbID}>
 								<div className="posterContainer">
-									<Link to={`/fetch-movie/${item.data.imdbID}`}>
+									<Link to={`/movie-details/${item.data.imdbID}`}>
 										<h3 value={item.data.imdbID}>
 											{item.data.Title}
 										</h3>
@@ -170,6 +183,7 @@ export function MainMovie() {
 										/>
 									</Link>
 									<p>{item.data.Rated}</p>
+                                    <button onClick={() => addToFavorites(item)}>Add Favorite</button>
 								</div>
 							</div>
 						);

@@ -10,6 +10,7 @@ import SignOut from './components/signout/SignOut';
 import Nav from './components/nav/Nav';
 import { MainMovie } from './components/movies/MainMovie';
 import { MainMovieDetail } from './components/movies/MainMovieDetail';
+import Profile  from './components/signin/Profile'
 require('dotenv').config();
 
 
@@ -57,7 +58,8 @@ function App() {
           <Route path="/sign-in" element={<Signin setUser={setUser}/>} />
 					<Route path="/sign-out" element={<SignOut setUser={setUser}/>}/>
 					<Route path="/" element={<MainMovie/>} />
-          <Route path="/movie-details/:id" element={<MainMovieDetail/>}/>
+          <Route path="/movie-details/:imdbID" element={<MainMovieDetail/>}/>
+          <Route path='/profile' element={<Profile />}/>
 				</Routes>
 			</Router>
 		</div>
