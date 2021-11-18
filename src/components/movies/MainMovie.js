@@ -102,6 +102,7 @@ export function MainMovie() {
                     title: e.data.Title,
                     moviePoster: e.data.Poster,
                     imdbLink: `https://www.omdbapi.com/?apikey=${api}&i=${e.data.imdbID}`,
+                    imdbID: e.data.imdbID,
                     userID: decodedToken.userID
                 },
                 {headers : {"Authorization" : `Bearer ${localStorage.getItem('loginToken')}`}})
@@ -161,6 +162,7 @@ export function MainMovie() {
 					type="text"
 					onInput={onInputHandler}
 					onKeyDown={keyPressHandler}
+                    id='mainMovieSearchbar'
 				/>
 				<button onClick={onClickHandler}>Search</button>
 			</div>

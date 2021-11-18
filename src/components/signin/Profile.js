@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 
 function Profile() {
-    const [favorites, setFavorites] = useState([]);
+    const [allFavorites, setAllFavorites] = useState([]);
     const [changes, setChanges] = useState(false);
 
     useEffect(() => {
@@ -13,7 +13,7 @@ function Profile() {
             let payload = await axios.get("http://localhost:3001/movies/get-favorites",
             {headers : {"Authorization" : `Bearer ${localStorage.getItem('loginToken')}`}})
 
-            setFavorites(payload.data.favorites);
+            setAllFavorites(payload.data.favorites);
         } catch(e) {
             console.log(e.response)
         }
@@ -21,35 +21,37 @@ function Profile() {
     getUsersFavorites();
 }, [changes])
 
+    async function handleDelete(e) {
+        console.log(e)
+        try {
+        let deletedItem = await axios.delete(`http://localhost:3001/movies/delete/${e}`,
+        {headers : {"Authorization" : `Bearer ${localStorage.getItem('loginToken')}`}})
+        console.log(deletedItem)
+        setChanges(!changes)
+        } catch(e) {
+            console.log(e.response)
+        }
+    }
+
 return(
     <div className="wrapper">
         <hr />
         <div className="box">
-            {favorites.map(movie => {
+            {allFavorites.map(movie => {
                 return(
                     <div key={movie._id} style={{margin: '20px', border : '1px solid black', borderRadius: '20px', padding: "20px"}}>
-                        
+                        {/* {console.log(movie.imdbID)} */}
                         <table style={{width : "300px"}}>
                             <tbody>
-                                
                                 <tr style={{height: "75px"}}>
-                                    
                                     <td>
                                         <Link to={`/movie-details/${movie.imdbID}`} style={{textDecoration : "none"}}>
-                                        <h3>{movie.title.length > 30 ? `${movie.title.slice(0,30)}...`: movie.title}</h3>
+                                        <h3>{movie.title.length > 50 ? `${movie.title.slice(0,30)}...`: movie.title}</h3>
                                         </Link>
                                     </td>
-                                </tr>
-                                <tr>
+
                                     <td>
-                                        <Link to={`/movie-details/${movie.imdbID}`} style={{textDecoration : "none"}}>
-                                            <img src={movie.poster} alt="" />
-                                        </Link></td>
-                                </tr>
-                                
-                                <tr>
-                                    <td>
-                                        {/* <button onClick={() => handleDelete(movie.imdbId)}>Remove</button> */}
+                                        <button onClick={() => handleDelete(movie.imdbID)}>Remove</button>
                                     </td>
                                 </tr>
                             </tbody>

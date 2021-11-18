@@ -74,10 +74,10 @@ function SignIn({setUser}) {
     }
 
     return (
-        <div className="form-div-signin">
-            <main className="form-signin">
+        <div className="signinContainer">
+            <div className="form-signin">
                 <form onSubmit={handleOnSubmit}>
-                    <h1 className="h3 mb-3 fw-normal">Please sign In</h1>
+                    <h1>Please sign In</h1>
                     <div className="form-floating">
                         <input
                         style={{border : `1px solid ${emailError.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${emailError.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
@@ -88,12 +88,12 @@ function SignIn({setUser}) {
                         type="email"
                         className="form-control"
                         id="floatingInput"
-                        placeholder="email@example.com"
+                        placeholder="email"
                         />
                         <label htmlFor="floatingInput">{email.length === 0 ? <span style={{color : 'red'}}>Please enter your email</span> : ("Email")}</label>
                     </div>
 
-                    <div className="form-floating">
+                    <div className="formsignin">
                         <input
                         style={{border : `1px solid ${passwordError.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${passwordError.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
                         type="password"
@@ -102,17 +102,16 @@ function SignIn({setUser}) {
                         onFocus={()=> setPasswordOnFocus(true)} 
                         onBlur={()=> setPasswordOnBlur(true)}
                         className="form-control"
-                        id="floatingPassword"
                         placeholder="Password"
                         />
-                        <label htmlFor="floatingInput">{password.length === 0 ? <span style={{color : 'red'}}>Please enter your password</span>  : ("Password")}</label>
+                        <label>{password.length === 0 ? <span style={{color : 'red'}}>Please enter your password</span>  : ("Password")}</label>
                     </div>
             
-                    <button className="w-100 btn btn-lg btn-primary" type="submit">
+                    <button style={{ 'padding': '10px'}} type="submit">
                         Sign In
                     </button>
                 </form>
-            </main>
+            </div>
         </div>
     );
 }
