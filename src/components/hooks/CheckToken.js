@@ -19,6 +19,7 @@ function CheckToken() {
                     return true
                 }
             } catch(e) {
+                console.log(e)
                 localStorage.removeItem('loginToken');
                 return false
             }

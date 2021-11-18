@@ -6,15 +6,17 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import Signup from './components/Signup/Signup';
 import Signin from './components/signin/Signin';
+import SignOut from './components/signout/SignOut';
 import Nav from './components/nav/Nav';
 import { MainMovie } from './components/movies/MainMovie';
 import { MainMovieDetail } from './components/movies/MainMovieDetail';
-
 require('dotenv').config();
+
 
 function App() {
   const [user, setUser] = useState(null);
   const key = process.env.REACT_APP_JWT_SECRET;
+
 
   useEffect(() => {
     try {
@@ -27,7 +29,7 @@ function App() {
           setUser({
             email: decodedToken.email,
             username: decodedToken.username,
-            id: decodedToken.id
+            userID: decodedToken.userID
           })
         }
       }
@@ -49,11 +51,13 @@ function App() {
 					draggable
 					pauseOnHover
 				/>
-				<Nav />
+				<Nav user={user}/>
 				<Routes>
 					<Route path="/sign-up" element={<Signup/>} />
-					<Route path="/sign-in" element={<Signin setUser={setUser}/>} />
-					<Route path="/" element={<MainMovie setUser={setUser}/>} />
+          <Route path="/sign-in" element={<Signin setUser={setUser}/>} />
+					<Route path="/sign-out" element={<SignOut setUser={setUser}/>}/>
+					<Route path="/" element={<MainMovie/>} />
+          <Route path="/movie-details/:id" element={<MainMovieDetail/>}/>
 				</Routes>
 			</Router>
 		</div>

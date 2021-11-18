@@ -6,7 +6,7 @@ function Nav({ user }) {
     let link1 = user ? '/profile' : '/sign-up';
 
     let linkTitle2 = user ? "logout" : "Sign in";
-    let link2 = user ? '/' : '/sign-in';
+    let link2 = user ? '/sign-out' : '/sign-in';
 
     return (
         <div className="nav">

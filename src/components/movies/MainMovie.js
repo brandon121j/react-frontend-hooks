@@ -1,11 +1,19 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwt } from 'jsonwebtoken';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import Loading from './Loading';
+import CheckToken from '../hooks/CheckToken';
 require('dotenv').config();
 
+
+
+const { checkJwtToken } = CheckToken();
+
 export function MainMovie() {
+    let navigate = useNavigate();
 	const [movies, setMovies] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [search, setSearch] = useState('');
@@ -23,8 +31,32 @@ export function MainMovie() {
 	const random = Math.floor(Math.random() * startingSearch.length);
 	const api = process.env.REACT_APP_API_KEY;
 
+    const notifyFailed = (input) => toast.error(`${input}`, {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
+    const notifySuccess = () => toast.success('Movie added to favorite!', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
 	useEffect(async () => {
-		fetchMovies();
+        if (checkJwtToken()) {
+            navigate('/sign-in')
+        } else {
+            fetchMovies();
+        }
 	}, []);
 
 	async function fetchMovies() {
@@ -61,6 +93,13 @@ export function MainMovie() {
 	const onInputHandler = (e) => {
 		setSearch(e.target.value);
 	};
+
+    const addToFavorites = async(e) => {
+        if (localStorage.getItem('loginToken') === null) {
+            notifyFailed('Please login')
+            navigate('/sign-in')
+        }
+    }
 
 	const onClickHandler = async () => {
 		try {

@@ -70,8 +70,16 @@ function SignUp(){
             notifySuccess();
             navigate('/sign-in');
         }catch(e){
-            let arr = []
-            console.log(e.response)
+            let errors = []
+            console.log(e.response);
+            for (let iterator in e.response.data.error) {
+                errors.push(e.response.data.error[iterator])
+            }
+            if (errors[0].length === 1) {
+                notifyFailed(e.response.data.error)
+            } else {
+                errors.map((item) => {notifyFailed(item)})
+            }
         }
     }
 

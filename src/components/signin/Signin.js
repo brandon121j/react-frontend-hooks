@@ -1,18 +1,14 @@
 import React, { useEffect } from "react";
-import {useNavigate} from'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import jwt from 'jsonwebtoken'
-
 import LoginEmailHooks from '../hooks/loginHooks/LoginEmailHooks';
 import LoginPasswordHooks from '../hooks/loginHooks/LoginPasswordHooks';
-
 import CheckToken from "../hooks/CheckToken";
-
 import { toast } from "react-toastify";
 import axios from "axios";
+require('dotenv').config();
 
 const { checkJwtToken } = CheckToken();
-
-require('dotenv').config();
 
 function SignIn({setUser}) {
     let navigate = useNavigate();
@@ -36,15 +32,15 @@ function SignIn({setUser}) {
         draggable: true,
         progress: undefined,
     });
+    
+    const [email, emailOnChangeHandler, emailError, setEmailOnFocus, setEmailOnBlur] = LoginEmailHooks()
+    const [password, passwordOnChangeHandler, passwordError, setPasswordOnFocus, setPasswordOnBlur] = LoginPasswordHooks()
 
     useEffect(() => {
         if (checkJwtToken()) {
             navigate('/')
         }
     }, [])
-    
-    const [email, emailOnChangeHandler, emailError, setEmailOnFocus, setEmailOnBlur] = LoginEmailHooks()
-    const [password, passwordOnChangeHandler, passwordError, setPasswordOnFocus, setPasswordOnBlur] = LoginPasswordHooks()
 
     async function handleOnSubmit(e) {
         e.preventDefault()
@@ -54,12 +50,14 @@ function SignIn({setUser}) {
                 password
             });
 
+            console.log(payload)
+
             let decodedToken = jwt.verify(payload.data.token, process.env.REACT_APP_JWT_SECRET);
 
             setUser({
                 email: decodedToken.email,
                 username: decodedToken.username,
-                userID: decodedToken.id
+                userID: decodedToken.userID
             });
 
             localStorage.setItem('loginToken', payload.data.token)
@@ -70,6 +68,8 @@ function SignIn({setUser}) {
             
         }catch(e){
             console.log(e)
+            notifyFailed(e.message)
+        
         }
     }
 
