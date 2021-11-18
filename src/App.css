@@ -71,3 +71,34 @@ li a:hover {
 .SearchMovieContainer button {
   padding: 10px;
 }
+
+.form-signin {
+  display: flex;
+  justify-content: center;
+}
+
+form-box {
+  display: flex;
+  justify-content: center;
+}
+
+.form-signin input{
+  padding: 10px;
+  margin: 5px;
+}
+
+.signUpContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.signUpBoxes input {
+  padding: 10px;
+  margin: 5px;
+}
+
+.signUpBox button{
+  padding: 10px;
+  width: 190px;
+}

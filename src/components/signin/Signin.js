@@ -68,46 +68,39 @@ function SignIn({setUser}) {
             
         }catch(e){
             console.log(e)
-            notifyFailed(e.message)
+            notifyFailed('Invalid login')
         
         }
     }
 
     return (
         <div className="signinContainer">
-            <div className="form-signin">
+            <div className="form-box">
                 <form onSubmit={handleOnSubmit}>
                     <h1>Please sign In</h1>
-                    <div className="form-floating">
+                    <div className="form-signin">
                         <input
-                        style={{border : `1px solid ${emailError.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${emailError.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
                         name={email} 
                         onChange={emailOnChangeHandler}
                         onFocus={()=> setEmailOnFocus(true)} 
                         onBlur={()=> setEmailOnBlur(true)}
                         type="email"
-                        className="form-control"
-                        id="floatingInput"
                         placeholder="email"
                         />
-                        <label htmlFor="floatingInput">{email.length === 0 ? <span style={{color : 'red'}}>Please enter your email</span> : ("Email")}</label>
                     </div>
 
-                    <div className="formsignin">
+                    <div className="form-signin">
                         <input
-                        style={{border : `1px solid ${passwordError.length === 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${passwordError.length === 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
                         type="password"
                         name={password} 
                         onChange={passwordOnChangeHandler}
                         onFocus={()=> setPasswordOnFocus(true)} 
                         onBlur={()=> setPasswordOnBlur(true)}
-                        className="form-control"
                         placeholder="Password"
                         />
-                        <label>{password.length === 0 ? <span style={{color : 'red'}}>Please enter your password</span>  : ("Password")}</label>
                     </div>
             
-                    <button style={{ 'padding': '10px'}} type="submit">
+                    <button style={{ 'padding': '10px', 'cursor': 'pointer' }} type="submit" >
                         Sign In
                     </button>
                 </form>
