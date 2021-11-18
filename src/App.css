@@ -102,3 +102,12 @@ form-box {
   padding: 10px;
   width: 190px;
 }
+
+.SearchContainer {
+  display: flex;
+  justify-content: center;
+}
+
+#favoriteButton {
+  margin: 10px;
+}
